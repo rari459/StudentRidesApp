@@ -1,6 +1,0 @@
-module Pods_TapRide {
-  umbrella header "Pods-TapRide-umbrella.h"
-
-  export *
-  module * { export * }
-}

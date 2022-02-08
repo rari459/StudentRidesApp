@@ -74,12 +74,12 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>Pods-TapRide-TapRideTests.xcscheme</key>
+		<key>Pods-Fleet-FleetTests.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>Pods-TapRide.xcscheme</key>
+		<key>Pods-Fleet.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
