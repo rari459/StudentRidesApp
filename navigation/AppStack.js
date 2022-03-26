@@ -2,6 +2,8 @@ import React from 'react';
 import { StyleSheet, Image } from 'react-native'
 import { createStackNavigator } from '@react-navigation/stack';
 import HomeView from '../src/main/HomeView';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import DrawerMenu from './DrawerMenu';
 
 export default function AppStack() {
 
@@ -24,11 +26,21 @@ export default function AppStack() {
     }
   }
 
-  const Stack = createStackNavigator()
+  function RootStack() {
+    const Stack = createStackNavigator()
+
+    return (
+      <Stack.Navigator screenOptions={headerOptions}>
+        <Stack.Screen name="Home" component={HomeView}/>
+      </Stack.Navigator>
+    )
+  }
+
+  const Drawer = createDrawerNavigator()
 
   return (
-    <Stack.Navigator screenOptions={headerOptions}>
-      <Stack.Screen name="Home" component={HomeView}/>
-    </Stack.Navigator>
+    <Drawer.Navigator drawerContent={(props) => <DrawerMenu {...props}/>}>
+      <Drawer.Screen name="Root" component={RootStack} options={{swipeEnabled: false, headerShown: false}}/>
+    </Drawer.Navigator>
   )
 }
