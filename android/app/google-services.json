@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "478858507478",
+    "project_id": "fleet-9a660",
+    "storage_bucket": "fleet-9a660.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:478858507478:android:2c3afe8d7f98dcca6cc577",
+        "android_client_info": {
+          "package_name": "com.zshenkman.fleet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "478858507478-t46rbdnhd71eam2463dj61885gag6c5o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDwcYfzzEhTpQyh3rBXBFNKgsyRLXhTkWM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "478858507478-t46rbdnhd71eam2463dj61885gag6c5o.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "478858507478-qkmn7f2rh96qvtf9k69v8sr6ntgglcrh.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.zshenkman.fleet"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
