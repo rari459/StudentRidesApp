@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Image } from 'react-native'
 import { createStackNavigator } from '@react-navigation/stack';
-import HomeView from '../src/main/HomeView';
+import HomeView from '../src/main/HomeView.jsx';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import DrawerMenu from './DrawerMenu';
 
