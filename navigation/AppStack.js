@@ -1,11 +1,9 @@
 import React from 'react';
-import { StyleSheet } from 'react-native'
+import { StyleSheet, Image } from 'react-native'
 import { createStackNavigator } from '@react-navigation/stack';
-import LoginView from '../src/auth/LoginView';
-import RegisterView from '../src/auth/RegisterView';
-import WelcomeView from '../src/auth/WelcomeView';
+import HomeView from '../src/main/HomeView';
 
-export default function AuthStack() {
+export default function AppStack() {
 
   const headerOptions = {
     title: "",
@@ -30,16 +28,7 @@ export default function AuthStack() {
 
   return (
     <Stack.Navigator screenOptions={headerOptions}>
-      <Stack.Screen name="Welcome" component={WelcomeView}/>
-      <Stack.Screen name="Login" component={LoginView}/>
-      <Stack.Screen name="Register" component={RegisterView}/>
+      <Stack.Screen name="Home" component={HomeView}/>
     </Stack.Navigator>
   )
 }
-
-const styles = StyleSheet.create({
-  logo: {
-    width: 50,
-    height: 50
-  },
-})

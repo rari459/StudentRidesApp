@@ -13,7 +13,7 @@ export class User {
         this.uid = uid || null
         this.dateCreated = new Date()
         this.email = ""
-        this.school = ""
+        this.school = "University of Florida"
     }
 
     async create(password: string): Promise<FirebaseAuthTypes.User> {

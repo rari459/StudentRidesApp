@@ -6,6 +6,7 @@ import { NavigationContainer } from '@react-navigation/native'
 import auth from '@react-native-firebase/auth'
 import analytics from '@react-native-firebase/analytics'
 import { User } from '../models'
+import AppStack from './AppStack'
 
 export default function AppNavigator() {
 
@@ -26,7 +27,6 @@ export default function AppNavigator() {
                 const profile = await User.getByUID(user.uid)
                 analytics().logEvent('session_started')
                 setCurrentUser(profile)
-                Alert.alert("Login Successful", `Hello ${profile.email}`)
             } else {
                 setCurrentUser(null)
             }
@@ -40,7 +40,7 @@ export default function AppNavigator() {
 
     return (
         <NavigationContainer>
-           <AuthStack/>
+           {currentUser ? <AppStack/> : <AuthStack/>}
         </NavigationContainer>
     )
 }

@@ -32,7 +32,6 @@ export const AuthProvider = ({ children }) => {
                 email = email.trim()
                 const user = new User()
                 user.email = email
-                user.school = "University of Florida"
                 const newFirebaseUser = await user.create(password)
 
                 analytics().logSignUp({method: 'email'})
