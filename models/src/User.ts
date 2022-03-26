@@ -17,18 +17,14 @@ export class User {
     }
 
     async create(password: string): Promise<FirebaseAuthTypes.User> {
-        try {
-            const result = await auth().createUserWithEmailAndPassword(this.email, password)
-            if (!result.user) {
-                throw new Error("Create user operation failed. Try again later.")
-            }
-            this.uid = result.user.uid
-
-            await firestore().collection('users').doc(this.uid).set(this)
-            return Promise.resolve(result.user)
-        } catch (err) {
-            return Promise.reject(err)
+        const result = await auth().createUserWithEmailAndPassword(this.email, password)
+        if (!result.user) {
+            throw new Error("Create user operation failed. Try again later.")
         }
+        this.uid = result.user.uid
+
+        await firestore().collection('users').doc(this.uid).set(this)
+        return Promise.resolve(result.user)
     }
 
     static async getByUID(uid: string): Promise<User | null> {
