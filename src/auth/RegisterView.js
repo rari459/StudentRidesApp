@@ -19,15 +19,11 @@ export default function RegisterView({ navigation }) {
           }
           setLoading(true)
           await register(email, password)
+          setLoading(false)
         } catch (err) {
           setLoading(false)
           return Alert.alert("Error", err.message)
         }
-    }
-
-    function forgotPassword() {
-      Alert.alert("Too bad lol", "This feature is still in development. Check back soon!")
-      // navigation.push('ForgotPassword')
     }
 
     return (

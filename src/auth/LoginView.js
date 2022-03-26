@@ -19,6 +19,7 @@ export default function LoginView({ navigation }) {
           }
           setLoading(true)
           await login(email, password)
+          setLoading(false)
         } catch (err) {
           setLoading(false)
           return Alert.alert("Error", err.message)
