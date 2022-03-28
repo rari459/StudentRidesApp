@@ -51,11 +51,11 @@ export class User {
 
     async getPreviousDestinations(): Promise<any[]> {
         const result = await firestore().collection('users').doc(this.uid).collection('rides').orderBy('dateCreated', 'desc').limitToLast(6).get()
-        const data = result.docs
-        if (!data || result.empty) {
+        const rideDocs = result.docs
+        if (!rideDocs || result.empty) {
             return Promise.resolve([])
         }
-        const rides = data.map((doc) => doc.data())
+        const rides = rideDocs.map((doc) => doc.data())
         const destinationNames = rides.map(ride => ride.destination)
         
         const locationsResult = await firestore().collection('locations').where('name', 'in', destinationNames).get()
@@ -63,11 +63,13 @@ export class User {
         if (!locationsDocs || locationsResult.empty) {
             return Promise.resolve([])
         }
-        const locations = locationsDocs.map((doc, i) => {
-            const data = doc.data()
-            return {...data as Location, rideDate: rides[i].dateCreated.toDate()}
+        const locations = locationsDocs.map((doc) => doc.data())
+
+        const response = rides.map((ride) => {
+            const location = locations.find(el => el.name === ride.destination) as Location
+            return {...location, rideDate: ride.dateCreated.toDate()}
         })
-        return Promise.resolve(locations)
+        return Promise.resolve(response)
     }
    
 }

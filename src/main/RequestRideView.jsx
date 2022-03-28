@@ -4,6 +4,7 @@ import { TextInput } from 'react-native-paper'
 import * as ExpoLocation from 'expo-location'
 import { Location } from '../../models'
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 
 export default function RequestRideView({ route, navigation }) {
 
@@ -22,19 +23,22 @@ export default function RequestRideView({ route, navigation }) {
         const currentRoute = parentState.routes[parentState.index]
         const defaultDestination = currentRoute.params ? JSON.parse(currentRoute.params.destination) : undefined
         if (defaultDestination) {
+            setDestinationLocation(defaultDestination)
             setDestinationText(defaultDestination.name)
             setFocusedField('destination')
-            searchFor(defaultDestination.name)
         }
     }, [])
 
-    React.useEffect(() => {
-        getClosestPickupLocation()
-    }, [currentLocation])
+    // React.useEffect(() => {
+    //     getClosestPickupLocation()
+    // }, [currentLocation])
 
     React.useEffect(() => {
         if (pickupLocation) {
             setPickupText(pickupLocation.name)
+            if (destinationLocation) {
+                navigation.navigate('Confirm Ride', {pickup: pickupLocation, destination: destinationLocation})
+            }
         }
     }, [pickupLocation])
 
@@ -50,6 +54,9 @@ export default function RequestRideView({ route, navigation }) {
     React.useEffect(() => {
         if (destinationLocation) {
             setDestinationText(destinationLocation.name)
+            if (pickupLocation) {
+                navigation.navigate('Confirm Ride', {pickup: pickupLocation, destination: destinationLocation})
+            }
         }
     }, [destinationLocation])
 
@@ -65,7 +72,7 @@ export default function RequestRideView({ route, navigation }) {
     async function getCurrentLocation() {
         const res = await ExpoLocation.requestForegroundPermissionsAsync()
         if (res.status === ExpoLocation.PermissionStatus.GRANTED) {
-            const location = await ExpoLocation.getCurrentPositionAsync()
+            const location = await ExpoLocation.getLastKnownPositionAsync()
             setCurrentLocation(location.coords)
         }
     }
@@ -93,12 +100,13 @@ export default function RequestRideView({ route, navigation }) {
 
         function onPress() {
             switch (focusedField) {
-                case 'pickup': return setPickupLocation(location)
+                case 'pickup': {
+                    setPickupLocation(location)
+                    break
+                }
                 case 'destination': {
                     setDestinationLocation(location)
-                    if (pickupLocation) {
-                        return navigation.navigate('Confirm Ride', {pickup: pickupLocation, destination: location})
-                    }
+                    break
                 }
                 default: break
             }
@@ -116,7 +124,7 @@ export default function RequestRideView({ route, navigation }) {
 
     return (
         <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
-            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <TouchableWithoutFeedback>
                 <View style={styles.content}>
                     <View style={styles.row}>
                         <TextInput 
@@ -132,10 +140,11 @@ export default function RequestRideView({ route, navigation }) {
                             outlineColor={'#8d97a6'}
                             activeOutlineColor={'#AB00FF'}
                             clearButtonMode={'while-editing'}
+                            autoFocus={true}
                         />
-                        {/* <TouchableOpacity style={styles.currentLocationButton} onPress={getClosestPickupLocation}>
+                        <TouchableOpacity style={styles.currentLocationButton} onPress={getClosestPickupLocation}>
                             <MaterialIcons name={'my-location'} size={30} color={'rgba(0, 0, 0, 0.3)'}/>
-                        </TouchableOpacity> */}
+                        </TouchableOpacity>
                     </View>
                     <View style={styles.row}>
                         <TextInput 
@@ -157,6 +166,7 @@ export default function RequestRideView({ route, navigation }) {
                         data={searchResults}
                         contentContainerStyle={{paddingVertical: 10}}
                         renderItem={renderSearchResults}
+                        keyboardShouldPersistTaps={'always'}
                     />
                 </View>
               </TouchableWithoutFeedback>

@@ -77,7 +77,7 @@ export default function HomeView({ navigation }) {
         if ((currentTime.hour() >= 18 && currentTime.hour() < 24) || (currentTime.hour() >= 0 && currentTime.hour() < 6)) {
             return `Good evening, ${currentUser.name} 🌙`
         } else {
-            return `Hello there, ${currentUser.name} ☀️`
+            return `Hi there, ${currentUser.name} ☀️`
         }
     }
 
