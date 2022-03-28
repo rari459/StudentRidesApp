@@ -46,7 +46,7 @@ export default function AppStack() {
       <Stack.Navigator screenOptions={{...headerOptions,
         headerBackImage: () => <Feather name={'x'} size={28} color={'#000'} style={{padding: 5}}/>
       }}>
-        <Stack.Screen name="Home" component={RequestRideView}/>
+        <Stack.Screen name="Root" component={RequestRideView}/>
         <Stack.Screen name="Confirm Ride" component={ConfirmRideView}/>
       </Stack.Navigator>
     )

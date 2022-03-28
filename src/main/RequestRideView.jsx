@@ -1,10 +1,8 @@
-import React, { useRef } from 'react'
+import React from 'react'
 import { View, StyleSheet, Text, Keyboard, KeyboardAvoidingView, TouchableWithoutFeedback, FlatList, TouchableOpacity } from 'react-native'
 import { TextInput } from 'react-native-paper'
-import AuthContext from '../../navigation/AuthContext'
 import * as ExpoLocation from 'expo-location'
 import { Location } from '../../models'
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 
 export default function RequestRideView({ route, navigation }) {
@@ -20,10 +18,13 @@ export default function RequestRideView({ route, navigation }) {
     React.useEffect(() => {
         getCurrentLocation()
 
-        const defaultDestination = route.params ? JSON.parse(route.params.destination) : undefined
+        const parentState = navigation.getParent().getState()
+        const currentRoute = parentState.routes[parentState.index]
+        const defaultDestination = currentRoute.params ? JSON.parse(currentRoute.params.destination) : undefined
         if (defaultDestination) {
-            setDestinationLocation(defaultDestination)
             setDestinationText(defaultDestination.name)
+            setFocusedField('destination')
+            searchFor(defaultDestination.name)
         }
     }, [])
 

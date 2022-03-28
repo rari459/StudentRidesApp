@@ -1,18 +1,19 @@
 import React, { useRef } from 'react'
-import { View, StyleSheet, Text, TouchableOpacity, Dimensions } from 'react-native'
+import { View, StyleSheet, Text, TouchableOpacity, Alert } from 'react-native'
 import AuthContext from '../../navigation/AuthContext'
 import MapView from 'react-native-maps'
 import Feather from 'react-native-vector-icons/Feather'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { Modalize } from 'react-native-modalize'
 import moment from 'moment'
-import { Location } from '../../models'
+import { User } from '../../models'
 
 export default function HomeView({ navigation }) {
 
     const { currentUser } = React.useContext(AuthContext)
     const modalizeRef = useRef(null)
     const [serviceIsActive, setServiceIsActive] = React.useState(false)
+    const [previousDestinations, setPreviousDestinations] = React.useState([])
 
     const DrawerButton = () => (
         <TouchableOpacity style={styles.button} activeOpacity={0.7} onPress={() => navigation.openDrawer()}>
@@ -45,11 +46,13 @@ export default function HomeView({ navigation }) {
             }
         })
 
-        // const location = new Location("Ben Hill Griffin Stadium", {latitude: 29.651371, longitude: -82.349721})
+        // const location = new Location("Little Hall", {latitude: 29.648626, longitude: -82.341168})
         // location.create()
     }, [])
 
     React.useEffect(() => {
+        getPreviousRides()
+
         const currentTime = moment()
         
         if ((currentTime.hour() >= 18 && currentTime.hour() < 24) || (currentTime.hour() >= 0 && currentTime.hour() < 6)) {
@@ -59,20 +62,14 @@ export default function HomeView({ navigation }) {
         }
     }, [])
 
-    const TEST_DATA = [
-        {
-            name: "Marston Science Library",
-            dateCreated: new Date()
-        },
-        {
-            name: "Library West",
-            dateCreated: new Date()
-        },
-        {
-            name: "Beaty Towers",
-            dateCreated: new Date()
+    async function getPreviousRides() {
+        try {
+            const locations = await currentUser.getPreviousDestinations()
+            setPreviousDestinations(locations)
+        } catch (err) {
+            Alert.alert("Error", err.message)
         }
-    ]
+    }
 
     function renderGreetingText() {
         const currentTime = moment()
@@ -96,7 +93,7 @@ export default function HomeView({ navigation }) {
             <Ionicons name={'location-sharp'} size={33} color={'#AB00FF'}/>
             <View style={styles.recentRideCardInfoColumn}>
                 <Text style={styles.recentRideNameText}>{destination.name}</Text>
-                <Text style={styles.recentRideDateText}>{moment(destination.dateCreated).format('MMM DD, h:mm A')}</Text>
+                <Text style={styles.recentRideDateText}>{moment(destination.rideDate).format('MMM DD, h:mm A')}</Text>
             </View>
         </TouchableOpacity>
     )
@@ -110,7 +107,7 @@ export default function HomeView({ navigation }) {
             <MapView
                 style={styles.map}
                 initialRegion={{
-                    latitude: 29.648621,
+                    latitude: 29.6465,
                     longitude: -82.343567,
                     latitudeDelta: 0.01,
                     longitudeDelta: 0.01,
@@ -124,7 +121,7 @@ export default function HomeView({ navigation }) {
                 panGestureComponentEnabled={true}
                 flatListProps={{
                     ListHeaderComponent: RecentListHeader,
-                    data: TEST_DATA,
+                    data: previousDestinations,
                     renderItem: renderRecentRideItem,
                     scrollEnabled: false
                 }}

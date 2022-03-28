@@ -27,7 +27,7 @@ export class Ride {
     }
 
     async create(): Promise<void> {
-        const newDoc = await firestore().collection('rides').add(this)
+        const newDoc = await firestore().collection('users').doc(this.requestor).collection('rides').add(this)
         this.uid = newDoc.id
         return Promise.resolve()
     }
