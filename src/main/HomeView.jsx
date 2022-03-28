@@ -4,9 +4,9 @@ import AuthContext from '../../navigation/AuthContext'
 import MapView from 'react-native-maps'
 import Feather from 'react-native-vector-icons/Feather'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { Modalize } from 'react-native-modalize'
 import moment from 'moment'
+import { Location } from '../../models'
 
 export default function HomeView({ navigation }) {
 
@@ -21,7 +21,7 @@ export default function HomeView({ navigation }) {
     )
 
     const HeaderBar = () => (
-        <TouchableOpacity style={styles.headerBar} activeOpacity={0.7}>
+        <TouchableOpacity style={styles.headerBar} activeOpacity={0.7} onPress={() => navigation.navigate('Request Ride')}>
             <Feather name={'search'} size={18} color={'#666666'}/>
             <Text style={styles.headerBarText}>Where are you going?</Text>
         </TouchableOpacity>
@@ -44,6 +44,9 @@ export default function HomeView({ navigation }) {
                 flexGrow: 0
             }
         })
+
+        // const location = new Location("Ben Hill Griffin Stadium", {latitude: 29.651371, longitude: -82.349721})
+        // location.create()
     }, [])
 
     React.useEffect(() => {
@@ -88,18 +91,18 @@ export default function HomeView({ navigation }) {
         </View>
     )
 
-    const RecentRideCard = ({name, dateCreated}) => (
-        <TouchableOpacity style={styles.recentRideCardContainer}>
+    const RecentRideCard = ({ destination }) => (
+        <TouchableOpacity style={styles.recentRideCardContainer} onPress={() => navigation.navigate('Request Ride', {destination: JSON.stringify(destination)})}>
             <Ionicons name={'location-sharp'} size={33} color={'#AB00FF'}/>
             <View style={styles.recentRideCardInfoColumn}>
-                <Text style={styles.recentRideNameText}>{name}</Text>
-                <Text style={styles.recentRideDateText}>{moment(dateCreated).format('MMM DD, h:mm A')}</Text>
+                <Text style={styles.recentRideNameText}>{destination.name}</Text>
+                <Text style={styles.recentRideDateText}>{moment(destination.dateCreated).format('MMM DD, h:mm A')}</Text>
             </View>
         </TouchableOpacity>
     )
 
     function renderRecentRideItem({ item }) {
-        return <RecentRideCard {...item}/>
+        return <RecentRideCard destination={item}/>
     }
 
     return (
@@ -192,8 +195,8 @@ const styles = StyleSheet.create({
     recentRideCardContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        paddingVertical: 5,
-        marginVertical: 10,
+        paddingVertical: 10,
+        marginVertical: 5,
         backgroundColor: '#fff'
     },
     recentRideCardInfoColumn: {

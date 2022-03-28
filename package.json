@@ -23,6 +23,8 @@
     "@react-navigation/native": "^6.0.8",
     "@react-navigation/stack": "^6.1.1",
     "bluebird": "^3.7.2",
+    "expo-location": "^14.0.2",
+    "geofire-common": "^5.2.0",
     "moment": "^2.29.1",
     "react": "17.0.2",
     "react-native": "0.67.4",
@@ -35,7 +37,8 @@
     "react-native-screens": "^3.13.1",
     "react-native-svg": "^12.3.0",
     "react-native-svg-transformer": "^1.0.0",
-    "react-native-vector-icons": "^9.1.0"
+    "react-native-vector-icons": "^9.1.0",
+    "expo": ">=44.0.0-0 <45.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.17.8",

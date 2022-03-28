@@ -1,9 +1,10 @@
 import React from 'react';
-import { StyleSheet, Image } from 'react-native'
 import { createStackNavigator } from '@react-navigation/stack';
 import HomeView from '../src/main/HomeView.jsx';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import DrawerMenu from './DrawerMenu';
+import RequestRideView from '../src/main/RequestRideView.jsx';
+import Feather from 'react-native-vector-icons/Feather';
 
 export default function AppStack() {
 
@@ -32,6 +33,10 @@ export default function AppStack() {
     return (
       <Stack.Navigator screenOptions={headerOptions}>
         <Stack.Screen name="Home" component={HomeView}/>
+        <Stack.Screen name="Request Ride" component={RequestRideView} options={{
+          presentation: 'modal',
+          headerBackImage: () => <Feather name={'x'} size={28} color={'#000'} style={{padding: 5}}/>
+        }}/>
       </Stack.Navigator>
     )
   }
