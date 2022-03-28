@@ -5,11 +5,12 @@ import AuthContext from '../../navigation/AuthContext'
 import * as ExpoLocation from 'expo-location'
 import { Location } from '../../models'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import Ionicons from 'react-native-vector-icons/Ionicons'
 
 export default function RequestRideView({ route, navigation }) {
 
-    const { currentUser } = React.useContext(AuthContext)
     const [currentLocation, setCurrentLocation] = React.useState(null)
+    const [focusedField, setFocusedField] = React.useState('pickup')
     const [pickupText, setPickupText] = React.useState("")
     const [pickupLocation, setPickupLocation] = React.useState(undefined)
     const [destinationText, setDestinationText] = React.useState("")
@@ -33,17 +34,31 @@ export default function RequestRideView({ route, navigation }) {
     }, [pickupLocation])
 
     React.useEffect(() => {
-        setPickupLocation(undefined)
+        if (pickupLocation && pickupLocation.name !== pickupText) {
+            setPickupLocation(undefined)
+            searchFor(pickupText)
+        } else if (!pickupLocation) {
+            searchFor(pickupText)
+        } else {
+            searchFor("")
+        }
     }, [pickupText])
 
     React.useEffect(() => {
         if (destinationLocation) {
-            setDestinationLocation(destinationLocation.name)
+            setDestinationText(destinationLocation.name)
         }
     }, [destinationLocation])
 
     React.useEffect(() => {
-        setDestinationLocation(undefined)
+        if (destinationLocation && destinationLocation.name !== destinationText) {
+            setDestinationLocation(undefined)
+            searchFor(destinationText)
+        } else if (!destinationLocation) {
+            searchFor(destinationText)
+        } else {
+            searchFor("")
+        }
     }, [destinationText])
 
     async function getCurrentLocation() {
@@ -59,6 +74,39 @@ export default function RequestRideView({ route, navigation }) {
         setPickupLocation(closestLocation)
     }
 
+    async function searchFor(text) {
+        if (text) {
+            const results = await Location.searchForLocations(text)
+            setSearchResults(results)
+        } else {
+            setSearchResults([])
+        }
+    }
+
+    function renderSearchResults({ item }) {
+        return <SearchResultCard location={item}/>
+    }
+
+    const SearchResultCard = ({ location }) => {
+
+        function onPress() {
+            switch (focusedField) {
+                case 'pickup': return setPickupLocation(location)
+                case 'destination': return setDestinationLocation(location)
+                default: break
+            }
+        }
+
+        return (
+            <TouchableOpacity style={styles.searchResultCardContainer} onPress={onPress}>
+                <Ionicons name={'location-sharp'} size={30} color={'#AB00FF'}/>
+                <View style={styles.searchResultCardInfoColumn}>
+                    <Text style={styles.searchResultCardNameText}>{location.name}</Text>
+                </View>
+            </TouchableOpacity>
+        )
+    }
+
     return (
         <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -68,6 +116,8 @@ export default function RequestRideView({ route, navigation }) {
                             label={'Pickup'}
                             value={pickupText}
                             onChangeText={setPickupText} 
+                            onFocus={() => setFocusedField('pickup')}
+                            onEndEditing={() => setFocusedField(null)}
                             mode={'outlined'}
                             style={styles.textInput} 
                             outlineColor={'#8d97a6'}
@@ -83,6 +133,8 @@ export default function RequestRideView({ route, navigation }) {
                             label={'Destination'}
                             value={destinationText}
                             onChangeText={setDestinationText} 
+                            onFocus={() => setFocusedField('destination')}
+                            onEndEditing={() => setFocusedField(null)}
                             mode={'outlined'}
                             style={styles.textInput} 
                             outlineColor={'#8d97a6'}
@@ -92,6 +144,8 @@ export default function RequestRideView({ route, navigation }) {
                     </View>
                     <FlatList
                         data={searchResults}
+                        contentContainerStyle={{paddingVertical: 10}}
+                        renderItem={renderSearchResults}
                     />
                 </View>
               </TouchableWithoutFeedback>
@@ -129,5 +183,20 @@ const styles = StyleSheet.create({
         top: 2.5,
         alignItems: 'center',
         justifyContent: 'center'
-    }
+    },
+    searchResultCardContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingVertical: 5,
+        marginVertical: 5,
+        backgroundColor: '#fff'
+    },
+    searchResultCardInfoColumn: {
+        marginLeft: 10
+    },
+    searchResultCardNameText: {
+        fontSize: 16,
+        fontWeight: '500',
+        marginBottom: 3
+    },
 });

@@ -37,6 +37,20 @@ export class Location {
         }
     }
 
+    static async searchForLocations(queryText: string): Promise<Location[]> {
+        try {
+            const result = await firestore().collection('locations').where('name', '>=', queryText).where('name', '<=', queryText+ '\uf8ff').get()
+            const data = result.docs
+            if (!data || result.empty) {
+                return Promise.resolve([])
+            }
+            const locations = data.map((doc) => doc.data())
+            return Promise.resolve(locations as Location[])
+        } catch (err) {
+            return Promise.resolve(null)
+        }
+    }
+
     // https://firebase.google.com/docs/firestore/solutions/geoqueries#query_geohashes
     static async findNearestLocation(currentLocation: FirebaseFirestoreTypes.GeoPoint): Promise<Location> {
         return new Promise((resolve, reject) => {
