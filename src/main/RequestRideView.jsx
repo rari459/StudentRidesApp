@@ -28,6 +28,10 @@ export default function RequestRideView({ route, navigation }) {
     }, [])
 
     React.useEffect(() => {
+        getClosestPickupLocation()
+    }, [currentLocation])
+
+    React.useEffect(() => {
         if (pickupLocation) {
             setPickupText(pickupLocation.name)
         }
@@ -39,8 +43,6 @@ export default function RequestRideView({ route, navigation }) {
             searchFor(pickupText)
         } else if (!pickupLocation) {
             searchFor(pickupText)
-        } else {
-            searchFor("")
         }
     }, [pickupText])
 
@@ -56,8 +58,6 @@ export default function RequestRideView({ route, navigation }) {
             searchFor(destinationText)
         } else if (!destinationLocation) {
             searchFor(destinationText)
-        } else {
-            searchFor("")
         }
     }, [destinationText])
 
@@ -70,6 +70,7 @@ export default function RequestRideView({ route, navigation }) {
     }
 
     async function getClosestPickupLocation() {
+        if (!currentLocation) return
         const closestLocation = await Location.findNearestLocation(currentLocation)
         setPickupLocation(closestLocation)
     }
@@ -92,7 +93,12 @@ export default function RequestRideView({ route, navigation }) {
         function onPress() {
             switch (focusedField) {
                 case 'pickup': return setPickupLocation(location)
-                case 'destination': return setDestinationLocation(location)
+                case 'destination': {
+                    setDestinationLocation(location)
+                    if (pickupLocation) {
+                        return navigation.navigate('Confirm Ride', {pickup: pickupLocation, destination: location})
+                    }
+                }
                 default: break
             }
         }
@@ -116,25 +122,29 @@ export default function RequestRideView({ route, navigation }) {
                             label={'Pickup'}
                             value={pickupText}
                             onChangeText={setPickupText} 
-                            onFocus={() => setFocusedField('pickup')}
-                            onEndEditing={() => setFocusedField(null)}
+                            onFocus={() => {
+                                setFocusedField('pickup')
+                                searchFor("")
+                            }}
                             mode={'outlined'}
                             style={styles.textInput} 
                             outlineColor={'#8d97a6'}
                             activeOutlineColor={'#AB00FF'}
                             clearButtonMode={'while-editing'}
                         />
-                        <TouchableOpacity style={styles.currentLocationButton} onPress={getClosestPickupLocation}>
+                        {/* <TouchableOpacity style={styles.currentLocationButton} onPress={getClosestPickupLocation}>
                             <MaterialIcons name={'my-location'} size={30} color={'rgba(0, 0, 0, 0.3)'}/>
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
                     </View>
                     <View style={styles.row}>
                         <TextInput 
                             label={'Destination'}
                             value={destinationText}
                             onChangeText={setDestinationText} 
-                            onFocus={() => setFocusedField('destination')}
-                            onEndEditing={() => setFocusedField(null)}
+                            onFocus={() => {
+                                setFocusedField('destination')
+                                searchFor("")
+                            }}
                             mode={'outlined'}
                             style={styles.textInput} 
                             outlineColor={'#8d97a6'}
