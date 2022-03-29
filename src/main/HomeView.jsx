@@ -14,6 +14,7 @@ export default function HomeView({ navigation }) {
 
     const { currentUser } = React.useContext(AuthContext)
     const [currentRide, setCurrentRide] = React.useState(null)
+    const [hasCurrentRide, setHasCurrentRide] = React.useState(false)
     const isFocused = useIsFocused()
 
     const DrawerButton = () => (
@@ -23,9 +24,13 @@ export default function HomeView({ navigation }) {
     )
 
     const HeaderBar = () => (
-        <TouchableOpacity style={styles.headerBar} activeOpacity={0.7} onPress={() => navigation.navigate('Request Ride')}>
-            <Feather name={'search'} size={18} color={'#666666'}/>
-            <Text style={styles.headerBarText}>Where are you going?</Text>
+        <TouchableOpacity style={styles.headerBar} activeOpacity={0.7} onPress={() => navigation.navigate('Request Ride')} disabled={currentRide}>
+            {!currentRide && <Feather name={'search'} size={18} color={'#666666'}/>}
+            {currentRide ?
+                <Text style={styles.headerBarText} numberOfLines={1}>{currentRide.pickup} → {currentRide.destination}</Text>
+            :
+                <Text style={styles.headerBarText}>Where are you going?</Text>
+            }
         </TouchableOpacity>
     )
 
@@ -46,14 +51,14 @@ export default function HomeView({ navigation }) {
                 flexGrow: 0
             }
         })
-    }, [])
+    }, [currentRide])
 
     React.useEffect(() => {
         getCurrentRide()
     }, [isFocused])
 
     React.useEffect(() => {
-        if (!currentRide) return
+        if (!hasCurrentRide) return
         
         const subscriber = firestore().collection('users').doc(currentUser.uid).collection('rides').doc(currentRide.uid).onSnapshot((snapshot) => {
             if (snapshot.exists) {
@@ -66,12 +71,15 @@ export default function HomeView({ navigation }) {
         })
 
         return () => subscriber()
-    }, [currentRide])
+    }, [hasCurrentRide])
 
     async function getCurrentRide() {
         try {
             const ride = await currentUser.getCurrentRide()
-            setCurrentRide(ride)
+            if (ride) {
+                setCurrentRide(ride)
+                setHasCurrentRide(true)
+            }
         } catch (err) {
             console.log(err)
             Alert.alert("Error", err.message)
@@ -144,14 +152,15 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.3,
         shadowRadius: 5,  
-        elevation: 1
+        elevation: 1,
+        paddingHorizontal: 5
     },
     headerBarText: {
         fontWeight: '500',
         fontSize: 15,
         fontStyle: 'italic',
         color: 'rgba(0, 0, 0, 0.6)',
-        paddingHorizontal: 5
+        paddingHorizontal: 10
     },
     modal: {
         minHeight: 300,

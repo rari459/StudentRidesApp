@@ -7,10 +7,10 @@ export class Vehicle {
 
     uid: string
     lastLocation: FirebaseFirestoreTypes.GeoPoint
-    number: number
+    number: string
     school: string
 
-    constructor(number?: number) {
+    constructor(number?: string) {
         this.number = number
         this.school = "University of Florida"
     }
@@ -42,7 +42,7 @@ export class Vehicle {
         }
     }
 
-    static async getByNumber(number: number): Promise<Vehicle | null> {
+    static async getByNumber(number: string): Promise<Vehicle | null> {
         try {
             const result = await firestore().collection('vehicles').where('number', '==', number).get()
             const data = result.docs
