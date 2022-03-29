@@ -22,7 +22,7 @@ export class Ride {
         this.dateCreated = new Date()
         this.driver = null
         this.pending = true
-        this.vehicle = 1123
+        this.vehicle = null
         this.pickup = pickup ? pickup.name : null
         this.destination = destination ? destination.name : null
         this.requestor = requestor ? requestor.uid : null

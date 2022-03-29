@@ -6,6 +6,9 @@ import Feather from 'react-native-vector-icons/Feather'
 import RecentRidesModal from '../../components/RecentRidesModal'
 import ConfirmedRideModal from '../../components/ConfirmedRideModal'
 import { useIsFocused } from '@react-navigation/native'
+import PendingRideModal from '../../components/PendingRideModal'
+import firestore from '@react-native-firebase/firestore';
+import { Ride } from '../../models'
 
 export default function HomeView({ navigation }) {
 
@@ -49,6 +52,22 @@ export default function HomeView({ navigation }) {
         getCurrentRide()
     }, [isFocused])
 
+    React.useEffect(() => {
+        if (!currentRide) return
+        
+        const subscriber = firestore().collection('users').doc(currentUser.uid).collection('rides').doc(currentRide.uid).onSnapshot((snapshot) => {
+            if (snapshot.exists) {
+                const data = snapshot.data()
+                const updatedRide = Ride.fromJSON(data)
+                setCurrentRide(updatedRide)
+            } else {
+                setCurrentRide(null)
+            }
+        })
+
+        return () => subscriber()
+    }, [currentRide])
+
     async function getCurrentRide() {
         try {
             const ride = await currentUser.getCurrentRide()
@@ -65,10 +84,10 @@ export default function HomeView({ navigation }) {
 
     function renderModal() {
         if (currentRide) {
-            if (currentRide.driver) {
+            if (currentRide.driver && currentRide.vehicle) {
                 return <ConfirmedRideModal ride={currentRide} onCancel={onCancelRide}/>
             } else {
-                return <ConfirmedRideModal ride={currentRide} onCancel={onCancelRide}/>
+                return <PendingRideModal ride={currentRide} onCancel={onCancelRide}/>
             }
         } else {
             return <RecentRidesModal/>
