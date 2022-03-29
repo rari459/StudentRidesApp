@@ -1,6 +1,7 @@
 import firestore, { FirebaseFirestoreTypes } from '@react-native-firebase/firestore'
 import { Promise } from 'bluebird'
 import { distanceBetween } from 'geofire-common'
+import { Location } from './Location'
 
 export class Vehicle {
 
@@ -56,10 +57,10 @@ export class Vehicle {
         }
     }
 
-    async getMinutesAway(destinationLocation: FirebaseFirestoreTypes.GeoPoint): Promise<number> {
+    async getETA(location: Location): Promise<number> {
         const center = [this.lastLocation.latitude, this.lastLocation.longitude]
-        const distanceInKm = distanceBetween([destinationLocation.latitude, destinationLocation.longitude], center)
-        const distanceInM = distanceInKm * 1000
-        return Promise.resolve(Math.round(distanceInM * 2))
+        const distanceInKm = distanceBetween([location.coordinates.latitude, location.coordinates.longitude], center)
+        const distanceInMi = distanceInKm / 1.609
+        return Promise.resolve(Math.round(distanceInMi * 10))
     }
 }

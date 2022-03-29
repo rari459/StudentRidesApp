@@ -52,7 +52,6 @@ export default function HomeView({ navigation }) {
     async function getCurrentRide() {
         try {
             const ride = await currentUser.getCurrentRide()
-            console.log(ride)
             setCurrentRide(ride)
         } catch (err) {
             console.log(err)

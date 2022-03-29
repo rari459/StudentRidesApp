@@ -48,7 +48,7 @@ export default function RecentRidesModal() {
     const RecentListHeader = () => (
         <View>
             <Text style={styles.greetingText}>{renderGreetingText()}</Text>
-            <Text style={styles.statusText}>The SNAP service is {serviceIsActive ? 'active' : 'inactive'}</Text>
+            <Text style={styles.statusText}>The SNAP service is {serviceIsActive ? 'active' : 'active'}</Text>
         </View>
     )
 

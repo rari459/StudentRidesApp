@@ -1,7 +1,6 @@
 import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth'
 import firestore, { FirebaseFirestoreTypes } from '@react-native-firebase/firestore'
 import { Promise } from 'bluebird'
-import { distanceBetween } from 'geofire-common'
 import { Location } from './Location'
 import { User } from './User'
 import { Vehicle } from './Vehicle'
@@ -68,13 +67,17 @@ export class Ride {
         return Promise.resolve(vehicle)
     }
 
+    async getPickup(): Promise<Location> {
+        const location = await Location.getByName(this.pickup)
+        return Promise.resolve(location)
+    }
+
     async getDestination(): Promise<Location> {
         const location = await Location.getByName(this.destination)
         return Promise.resolve(location)
     }
 
     async cancel(): Promise<void> {
-        console.log(this)
         await firestore().collection('users').doc(this.requestor).collection('rides').doc(this.uid).delete()
         return Promise.resolve()
     }

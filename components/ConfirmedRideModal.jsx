@@ -1,43 +1,27 @@
 import React from 'react'
 import { View, StyleSheet, Text, TouchableOpacity, Image } from 'react-native'
-import AuthContext from '../navigation/AuthContext'
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons'
 import { Modalize } from 'react-native-modalize'
-import * as ExpoLocation from 'expo-location'
-import { useNavigation } from '@react-navigation/core'
 import VanPNG from './../assets/van.png'
 
 export default function ConfirmedRideModal({ ride, onCancel }) {
 
-    const { currentUser } = React.useContext(AuthContext)
-    const navigation = useNavigation()
     const [vehicle, setVehicle] = React.useState(null)
-    const [currentLocation, setCurrentLocation] = React.useState(null)
-    const [minutesAway, setMinutesAway] = React.useState(3)
+    const [minutesAway, setMinutesAway] = React.useState(0)
     const modalizeRef = React.useRef(null)
 
-    async function getCurrentLocation() {
-        const res = await ExpoLocation.requestForegroundPermissionsAsync()
-        if (res.status === ExpoLocation.PermissionStatus.GRANTED) {
-            const location = await ExpoLocation.getLastKnownPositionAsync()
-            setCurrentLocation(location.coords)
-        }
-    }
-
     React.useEffect(() => {
-        getCurrentLocation()
-    }, [ride])
+        refresh()
+    }, [])
 
-    React.useEffect(() => {
-        getTimeRemaining()
-    }, [currentLocation])
-
-    async function getTimeRemaining() {
-        if (!currentLocation) return
+    async function refresh() {
         const vehicle = await ride.getVehicle()
-        console.log(vehicle)
         setVehicle(vehicle)
-        // setMinutesAway(timeRemaining)
+        const pickupLocation = await ride.getPickup()
+        if (pickupLocation) {
+            const timeRemaining = await vehicle.getETA(pickupLocation)
+            setMinutesAway(timeRemaining)
+        }
     }
 
     async function cancelRide() {
@@ -49,7 +33,7 @@ export default function ConfirmedRideModal({ ride, onCancel }) {
         <Modalize 
             ref={modalizeRef}
             modalStyle={styles.modal} 
-            alwaysOpen={360} 
+            alwaysOpen={350} 
             modalTopOffset={75}
             panGestureEnabled={false}
             scrollViewProps={{scrollEnabled: false}}
@@ -60,7 +44,7 @@ export default function ConfirmedRideModal({ ride, onCancel }) {
                     {vehicle && <View style={{...styles.row, justifyContent: 'space-between'}}>
                         <Image source={VanPNG} style={styles.carImage} resizeMode={'contain'}/>
                         <View style={styles.vehicleInfoContainer}>
-                            <Text style={{...styles.headingText, fontWeight: '500', color: 'rgba(0, 0, 0, 0.5)'}}>Your vehicle number is</Text>
+                            <Text style={styles.subheadingText}>Your vehicle number is</Text>
                             <Text style={styles.licensePlateText}>{vehicle.number}</Text>
                         </View>
                     </View>}
@@ -132,13 +116,13 @@ const styles = StyleSheet.create({
     cancelButton: {
         flexDirection: 'row',
         backgroundColor: '#AB00FF',
-        padding: 15,
+        padding: 12,
         borderRadius: 30,
         alignItems: 'center',
         justifyContent: 'center'
     },
     cancelButtonText: {
-        fontSize: 20,
+        fontSize: 18,
         fontWeight: '800',
         color: '#fff',
         paddingHorizontal: 10

@@ -12,8 +12,8 @@ export class Location {
 
     constructor(name?: string, coordinates?: FirebaseFirestoreTypes.GeoPoint) {
         this.name = name
-        this.coordinates = new firestore.GeoPoint(coordinates.latitude, coordinates.longitude)
-        this.geohash = geohashForLocation([coordinates.latitude, coordinates.longitude]);
+        this.coordinates = coordinates ? new firestore.GeoPoint(coordinates.latitude, coordinates.longitude) : null
+        this.geohash = coordinates ? geohashForLocation([coordinates.latitude, coordinates.longitude]) : null
         this.school = "University of Florida"
     }
 
