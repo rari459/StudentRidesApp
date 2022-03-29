@@ -10,11 +10,17 @@ export class Location {
     name: string
     school: string
 
-    constructor(name: string, coordinates: FirebaseFirestoreTypes.GeoPoint) {
+    constructor(name?: string, coordinates?: FirebaseFirestoreTypes.GeoPoint) {
         this.name = name
-        this.coordinates =  new firestore.GeoPoint(coordinates.latitude, coordinates.longitude)
+        this.coordinates = new firestore.GeoPoint(coordinates.latitude, coordinates.longitude)
         this.geohash = geohashForLocation([coordinates.latitude, coordinates.longitude]);
         this.school = "University of Florida"
+    }
+
+    static fromJSON(data): Location {
+        const location = new Location()
+        Object.assign(location, data)
+        return location
     }
 
     async create(): Promise<void> {
@@ -31,7 +37,22 @@ export class Location {
                 throw new Error("No destination found with that ID.")
             }
             data.id = result.id
-            return Promise.resolve(data as Location)
+            return Promise.resolve(Location.fromJSON(data))
+        } catch (err) {
+            return Promise.resolve(null)
+        }
+    }
+
+    static async getByName(name: string): Promise<Location | null> {
+        try {
+            const result = await firestore().collection('locations').where('name', '==', name).get()
+            const data = result.docs
+            if (!data || result.empty) {
+                return Promise.resolve(null)
+            }
+            const locations = data.map((doc) => doc.data())
+            const location = Location.fromJSON(locations[0])
+            return Promise.resolve(location)
         } catch (err) {
             return Promise.resolve(null)
         }

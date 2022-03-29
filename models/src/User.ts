@@ -2,6 +2,7 @@ import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth'
 import firestore from '@react-native-firebase/firestore'
 import { Promise } from 'bluebird'
 import { Location } from './Location'
+import { Ride } from './Ride'
 
 export class User {
 
@@ -49,8 +50,19 @@ export class User {
         }
     }
 
+    async getCurrentRide(): Promise<Ride> {
+        const result = await firestore().collection('users').doc(this.uid).collection('rides').where('pending', '==', true).orderBy('dateCreated', 'desc').limit(1).get()
+        const rideDocs = result.docs
+        if (!rideDocs || result.empty) {
+            return Promise.resolve(null)
+        }
+        const rides = rideDocs.map((doc) => doc.data())
+        const ride = Ride.fromJSON(rides[0])
+        return Promise.resolve(ride)
+    }
+
     async getPreviousDestinations(): Promise<any[]> {
-        const result = await firestore().collection('users').doc(this.uid).collection('rides').orderBy('dateCreated', 'desc').limitToLast(6).get()
+        const result = await firestore().collection('users').doc(this.uid).collection('rides').orderBy('dateCreated', 'desc').limit(6).get()
         const rideDocs = result.docs
         if (!rideDocs || result.empty) {
             return Promise.resolve([])
@@ -71,5 +83,4 @@ export class User {
         })
         return Promise.resolve(response)
     }
-   
 }
