@@ -58,9 +58,24 @@ export default function HomeView({ navigation }) {
     React.useEffect(() => {
         if (isFocused) {
             getCurrentRide()
-            getVehicles()
         }
     }, [isFocused])
+
+    React.useEffect(() => {
+        const subscriber = firestore().collection('vehicles').where('school', '==', currentUser.school).onSnapshot((snapshot) => {
+            const docs = snapshot.docs
+            if (!docs || snapshot.empty) {
+                return Promise.resolve([])
+            }
+            const vehicles = docs.map((doc) => {
+                const data = doc.data()
+                return Vehicle.fromJSON(data)
+            })
+            setVehicles(vehicles)
+        })
+
+        return () => subscriber()
+    }, [])
 
     React.useEffect(() => {
         if (!hasCurrentRide) return
@@ -100,11 +115,6 @@ export default function HomeView({ navigation }) {
         }
     }
 
-    async function getVehicles() {
-        const vehicles = await Vehicle.getBySchool("University of Florida")
-        setVehicles(vehicles)
-    }
-
     function onCancelRide() {
         setCurrentRide(null)
     }
@@ -112,7 +122,7 @@ export default function HomeView({ navigation }) {
     function renderVehicleMarkers() {
         return vehicles.map((vehicle) => (
             <Marker coordinate={{latitude: vehicle.lastLocation.latitude, longitude: vehicle.lastLocation.longitude}}>
-                <Image source={VanTopPNG} style={{...styles.markerImage, transform: [{rotate: `${vehicle.angle}deg`}]}} resizeMode={'contain'}/>
+                <Image source={VanTopPNG} style={{...styles.markerImage, transform: [{rotate: `-${vehicle.angle}deg`}]}} resizeMode={'contain'}/>
             </Marker>
         ))
     }
@@ -199,7 +209,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20
     },
     markerImage: {
-        height: 35,
+        height: 30,
         aspectRatio: 2
     }
 });

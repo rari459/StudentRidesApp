@@ -61,6 +61,14 @@ export class Ride {
         }
     }
 
+    async assignDriver(driver: User, vehicle: string): Promise<void> {
+        this.driver = driver.uid
+        this.vehicle = vehicle
+        this.isPending = false
+        await this.save()
+        return Promise.resolve()
+    }
+
     async getDriver(): Promise<User> {
         const driver = await User.getByUID(this.driver)
         return Promise.resolve(driver)
@@ -83,6 +91,7 @@ export class Ride {
 
     async cancel(): Promise<void> {
         this.isCancelled = true
+        this.isPending = false
         await this.save()
     }
 

@@ -51,7 +51,7 @@ export class User {
     }
 
     async getCurrentRide(): Promise<Ride> {
-        const result = await firestore().collection('users').doc(this.uid).collection('rides').orderBy('dateCreated', 'desc').limit(3).get()
+        const result = await firestore().collection('users').doc(this.uid).collection('rides').orderBy('dateCreated', 'desc').limit(1).get()
         const rideDocs = result.docs
         if (!rideDocs || result.empty) {
             return Promise.resolve(null)
