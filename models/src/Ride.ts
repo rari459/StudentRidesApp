@@ -11,8 +11,10 @@ export class Ride {
     dateCreated: Date
     destination: string
     driver: string
+    isPending: boolean
+    isCancelled: boolean
+    isCompleted: boolean
     passengers: number
-    pending: boolean
     pickup: string
     requestor: string
     vehicle: string
@@ -21,7 +23,9 @@ export class Ride {
     constructor(requestor?: User, pickup?: Location, destination?: Location, passengers?: number, wheelchairs?: number) {
         this.dateCreated = new Date()
         this.driver = "0KKDvDWpWvZObDYLVCTg8zIO74j1"
-        this.pending = true
+        this.isPending = true
+        this.isCancelled = false
+        this.isCompleted = false
         this.vehicle = null
         this.pickup = pickup ? pickup.name : null
         this.destination = destination ? destination.name : null

@@ -6,6 +6,7 @@ import DrawerMenu from './DrawerMenu';
 import RequestRideView from '../src/main/RequestRideView.jsx';
 import Feather from 'react-native-vector-icons/Feather';
 import ConfirmRideView from '../src/main/ConfirmRideView.jsx';
+import RatingView from '../src/main/RatingView.jsx';
 
 export default function AppStack() {
 
@@ -35,6 +36,7 @@ export default function AppStack() {
       <Stack.Navigator screenOptions={headerOptions}>
         <Stack.Screen name="Home" component={HomeView}/>
         <Stack.Screen name="Request Ride" component={RequestRideStack} options={{presentation: 'modal', headerShown: false}}/>
+        <Stack.Screen name="Rate Ride" component={RatingView} options={{presentation: 'modal', headerBackImage: () => <Feather name={'x'} size={28} color={'#000'} style={{padding: 5}}/>}}/>
       </Stack.Navigator>
     )
   }

@@ -12,7 +12,7 @@ export default function ConfirmedRideModal({ ride, onCancel }) {
 
     React.useEffect(() => {
         refresh()
-    }, [])
+    }, [ride])
 
     async function refresh() {
         const vehicle = await ride.getVehicle()
@@ -41,13 +41,13 @@ export default function ConfirmedRideModal({ ride, onCancel }) {
         >
             <View style={styles.container}>
                 <View>
-                    {vehicle && <View style={{...styles.row, justifyContent: 'space-between'}}>
+                    <View style={{...styles.row, justifyContent: 'space-between'}}>
                         <Image source={VanPNG} style={styles.carImage} resizeMode={'contain'}/>
                         <View style={styles.vehicleInfoContainer}>
                             <Text style={styles.subheadingText}>Your vehicle number is</Text>
-                            <Text style={styles.licensePlateText}>{vehicle.number}</Text>
+                            <Text style={styles.licensePlateText}>{vehicle ? vehicle.number : '----'}</Text>
                         </View>
-                    </View>}
+                    </View>
                     <View style={styles.innerContent}>
                         <View style={styles.row}>
                             <SimpleLineIcons name={'clock'} size={26}/>

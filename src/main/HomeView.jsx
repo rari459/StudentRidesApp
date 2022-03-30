@@ -65,6 +65,16 @@ export default function HomeView({ navigation }) {
                 const data = snapshot.data()
                 const updatedRide = Ride.fromJSON(data)
                 setCurrentRide(updatedRide)
+                if (updatedRide.isCompleted) {
+                    setCurrentRide(null)
+                    setHasCurrentRide(false)
+                    navigation.navigate('Rate Ride', {ride: updatedRide})
+                }
+                if (updatedRide.isCancelled) {
+                    setCurrentRide(null)
+                    setHasCurrentRide(false)
+                    navigation.navigate('Rate Ride', {ride: updatedRide})
+                }
             } else {
                 setCurrentRide(null)
             }
@@ -92,10 +102,10 @@ export default function HomeView({ navigation }) {
 
     function renderModal() {
         if (currentRide) {
-            if (currentRide.driver && currentRide.vehicle) {
-                return <ConfirmedRideModal ride={currentRide} onCancel={onCancelRide}/>
-            } else {
+            if (currentRide.isPending) {
                 return <PendingRideModal ride={currentRide} onCancel={onCancelRide}/>
+            } else {
+                return <ConfirmedRideModal ride={currentRide} onCancel={onCancelRide}/>
             }
         } else {
             return <RecentRidesModal/>
