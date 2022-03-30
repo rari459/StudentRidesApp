@@ -14,7 +14,7 @@ export default function RatingView({ route, navigation }) {
     const [loading, setLoading] = React.useState(false)
 
     const SubmitButton = () => (
-        <TouchableOpacity style={{...styles.submitButton, backgroundColor: rating === 0 ? 'rgba(0, 0, 0, 0.2)' : '#AB00FF'}} onPress={submit} disabled={rating === 0}>
+        <TouchableOpacity style={{...styles.submitButton, backgroundColor: rating === 0 ? 'rgba(0, 0, 0, 0.1)' : '#AB00FF'}} onPress={submit} disabled={rating === 0}>
             {loading ? <ActivityIndicator color={'#fff'}/> : <Text style={styles.submitButtonText}>Submit</Text>}
         </TouchableOpacity>
     )
@@ -45,8 +45,8 @@ export default function RatingView({ route, navigation }) {
                     <Text style={styles.headerText}>How was your ride?</Text>
                     <StarRatingSlider
                         count={5}
-                        showRating={false}
                         startingValue={0}
+                        showRating={false}
                         onFinishRating={setRating}
                         imageSize={50}
                         style={{marginVertical: 20, alignSelf: 'flex-start'}}

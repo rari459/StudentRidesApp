@@ -45,7 +45,7 @@ export default function ConfirmedRideModal({ ride, onCancel }) {
                         <Image source={VanPNG} style={styles.carImage} resizeMode={'contain'}/>
                         <View style={styles.vehicleInfoContainer}>
                             <Text style={styles.subheadingText}>Your vehicle number is</Text>
-                            <Text style={styles.licensePlateText}>{vehicle ? vehicle.number : '----'}</Text>
+                            <Text style={styles.licensePlateText}>{ride.vehicle}</Text>
                         </View>
                     </View>
                     <View style={styles.innerContent}>

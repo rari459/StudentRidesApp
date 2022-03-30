@@ -51,7 +51,7 @@ export class User {
     }
 
     async getCurrentRide(): Promise<Ride> {
-        const result = await firestore().collection('users').doc(this.uid).collection('rides').orderBy('dateCreated', 'desc').limit(5).get()
+        const result = await firestore().collection('users').doc(this.uid).collection('rides').orderBy('dateCreated', 'desc').limit(3).get()
         const rideDocs = result.docs
         if (!rideDocs || result.empty) {
             return Promise.resolve(null)
@@ -70,7 +70,10 @@ export class User {
         if (!rideDocs || result.empty) {
             return Promise.resolve([])
         }
-        const rides = rideDocs.map((doc) => doc.data())
+        const rides = rideDocs.map((doc) => doc.data()).filter(el => el.isCompleted)
+        if (rides.length === 0) {
+            return Promise.resolve([])
+        }
         const destinationNames = rides.map(ride => ride.destination)
         
         const locationsResult = await firestore().collection('locations').where('name', 'in', destinationNames).get()

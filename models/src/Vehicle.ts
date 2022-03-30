@@ -6,6 +6,7 @@ import { Location } from './Location'
 export class Vehicle {
 
     uid: string
+    angle: number
     lastLocation: FirebaseFirestoreTypes.GeoPoint
     number: string
     school: string
@@ -54,6 +55,23 @@ export class Vehicle {
             return Promise.resolve(vehicle)
         } catch (err) {
             return Promise.resolve(null)
+        }
+    }
+
+    static async getBySchool(school: string): Promise<Vehicle[]> {
+        try {
+            const result = await firestore().collection('vehicles').where('school', '==', school).get()
+            const docs = result.docs
+            if (!docs || result.empty) {
+                return Promise.resolve([])
+            }
+            const vehicles = docs.map((doc) => {
+                const data = doc.data()
+                return Vehicle.fromJSON(data)
+            })
+            return Promise.resolve(vehicles)
+        } catch (err) {
+            return Promise.resolve([])
         }
     }
 

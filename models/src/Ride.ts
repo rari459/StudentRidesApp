@@ -82,7 +82,12 @@ export class Ride {
     }
 
     async cancel(): Promise<void> {
-        await firestore().collection('users').doc(this.requestor).collection('rides').doc(this.uid).delete()
+        this.isCancelled = true
+        await this.save()
+    }
+
+    async save(): Promise<void> {
+        await firestore().collection('users').doc(this.requestor).collection('rides').doc(this.uid).update(this)
         return Promise.resolve()
     }
 }

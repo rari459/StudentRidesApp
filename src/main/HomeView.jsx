@@ -1,20 +1,22 @@
 import React from 'react'
-import { View, StyleSheet, Text, TouchableOpacity, Alert } from 'react-native'
+import { View, StyleSheet, Text, TouchableOpacity, Alert, Image } from 'react-native'
 import AuthContext from '../../navigation/AuthContext'
-import MapView from 'react-native-maps'
+import MapView, { Marker } from 'react-native-maps'
 import Feather from 'react-native-vector-icons/Feather'
 import RecentRidesModal from '../../components/RecentRidesModal'
 import ConfirmedRideModal from '../../components/ConfirmedRideModal'
 import { useIsFocused } from '@react-navigation/native'
 import PendingRideModal from '../../components/PendingRideModal'
 import firestore from '@react-native-firebase/firestore';
-import { Ride } from '../../models'
+import { Ride, Vehicle } from '../../models'
+import VanTopPNG from '../../assets/van_top.png'
 
 export default function HomeView({ navigation }) {
 
     const { currentUser } = React.useContext(AuthContext)
     const [currentRide, setCurrentRide] = React.useState(null)
     const [hasCurrentRide, setHasCurrentRide] = React.useState(false)
+    const [vehicles, setVehicles] = React.useState([])
     const isFocused = useIsFocused()
 
     const DrawerButton = () => (
@@ -54,7 +56,10 @@ export default function HomeView({ navigation }) {
     }, [currentRide])
 
     React.useEffect(() => {
-        getCurrentRide()
+        if (isFocused) {
+            getCurrentRide()
+            getVehicles()
+        }
     }, [isFocused])
 
     React.useEffect(() => {
@@ -70,10 +75,9 @@ export default function HomeView({ navigation }) {
                     setHasCurrentRide(false)
                     navigation.navigate('Rate Ride', {ride: updatedRide})
                 }
-                if (updatedRide.isCancelled) {
+                else if (updatedRide.isCancelled) {
                     setCurrentRide(null)
                     setHasCurrentRide(false)
-                    navigation.navigate('Rate Ride', {ride: updatedRide})
                 }
             } else {
                 setCurrentRide(null)
@@ -96,8 +100,21 @@ export default function HomeView({ navigation }) {
         }
     }
 
+    async function getVehicles() {
+        const vehicles = await Vehicle.getBySchool("University of Florida")
+        setVehicles(vehicles)
+    }
+
     function onCancelRide() {
         setCurrentRide(null)
+    }
+
+    function renderVehicleMarkers() {
+        return vehicles.map((vehicle) => (
+            <Marker coordinate={{latitude: vehicle.lastLocation.latitude, longitude: vehicle.lastLocation.longitude}}>
+                <Image source={VanTopPNG} style={{...styles.markerImage, transform: [{rotate: `${vehicle.angle}deg`}]}} resizeMode={'contain'}/>
+            </Marker>
+        ))
     }
 
     function renderModal() {
@@ -122,7 +139,9 @@ export default function HomeView({ navigation }) {
                     latitudeDelta: 0.01,
                     longitudeDelta: 0.01,
                 }}
-            />
+            >
+                {renderVehicleMarkers()}
+            </MapView>
             {renderModal()}
         </View>
     )
@@ -170,12 +189,17 @@ const styles = StyleSheet.create({
         fontSize: 15,
         fontStyle: 'italic',
         color: 'rgba(0, 0, 0, 0.6)',
-        paddingHorizontal: 10
+        paddingHorizontal: 10,
+        maxWidth: '95%'
     },
     modal: {
         minHeight: 300,
         backgroundColor: '#fff',
         paddingVertical: 25,
         paddingHorizontal: 20
+    },
+    markerImage: {
+        height: 35,
+        aspectRatio: 2
     }
 });
