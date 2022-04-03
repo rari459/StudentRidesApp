@@ -157,6 +157,7 @@ export default function HomeView({ navigation }) {
                 showsUserLocation={false}
                 toolbarEnabled={false}
                 followsUserLocation={currentRide && !currentRide.isPending}
+                mapPadding={{bottom: 270}}
             >
                 {renderVehicleMarkers()}
             </MapView>
