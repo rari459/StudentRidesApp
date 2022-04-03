@@ -1,6 +1,8 @@
 import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth'
 import firestore from '@react-native-firebase/firestore'
 import { Promise } from 'bluebird'
+import { Location } from './Location'
+import { Ride } from './Ride'
 
 export class User {
 
@@ -14,6 +16,12 @@ export class User {
         this.dateCreated = new Date()
         this.email = ""
         this.school = "University of Florida"
+    }
+
+    static fromJSON(data): User {
+        const user = new User(data.uid)
+        Object.assign(user, data)
+        return user
     }
 
     async create(password: string): Promise<FirebaseAuthTypes.User> {
@@ -35,11 +43,50 @@ export class User {
                 throw new Error("No user found with that ID.")
             }
             data.id = result.id
-            return Promise.resolve(data as User)
+            const user = User.fromJSON(data)
+            return Promise.resolve(user)
         } catch (err) {
             return Promise.resolve(null)
         }
     }
 
-   
+    async getCurrentRide(): Promise<Ride> {
+        const result = await firestore().collection('users').doc(this.uid).collection('rides').where('isPending', '==', true).orderBy('dateCreated', 'desc').limit(1).get()
+        const rideDocs = result.docs
+        if (!rideDocs || result.empty) {
+            return Promise.resolve(null)
+        }
+        const rides = rideDocs.map((doc) => doc.data())
+        if (rides.length === 0) {
+            return Promise.resolve(null)
+        }
+        const ride = Ride.fromJSON(rides[0])
+        return Promise.resolve(ride)
+    }
+
+    async getPreviousDestinations(): Promise<any[]> {
+        const result = await firestore().collection('users').doc(this.uid).collection('rides').where('isCompleted', '==', true).orderBy('dateCreated', 'desc').limit(6).get()
+        const rideDocs = result.docs
+        if (!rideDocs || result.empty) {
+            return Promise.resolve([])
+        }
+        const rides = rideDocs.map((doc) => doc.data()).filter(el => el.isCompleted)
+        if (rides.length === 0) {
+            return Promise.resolve([])
+        }
+        const destinationNames = rides.map(ride => ride.destination)
+        
+        const locationsResult = await firestore().collection('locations').where('name', 'in', destinationNames).get()
+        const locationsDocs = locationsResult.docs
+        if (!locationsDocs || locationsResult.empty) {
+            return Promise.resolve([])
+        }
+        const locations = locationsDocs.map((doc) => doc.data())
+
+        const response = rides.map((ride) => {
+            const location = locations.find(el => el.name === ride.destination) as Location
+            return {...location, rideDate: ride.dateCreated.toDate()}
+        })
+        return Promise.resolve(response)
+    }
 }
