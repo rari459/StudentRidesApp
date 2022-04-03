@@ -89,4 +89,17 @@ export class User {
         })
         return Promise.resolve(response)
     }
+
+    async getRidesHistory(): Promise<any[]> {
+        const result = await firestore().collection('users').doc(this.uid).collection('rides').orderBy('dateCreated', 'desc').get()
+        const rideDocs = result.docs
+        if (!rideDocs || result.empty) {
+            return Promise.resolve([])
+        }
+        const rides = rideDocs.map((doc) => {
+            const data = doc.data()
+            return Ride.fromJSON(data)
+        })
+        return Promise.resolve(rides)
+    }
 }

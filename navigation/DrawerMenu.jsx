@@ -13,6 +13,9 @@ export default function DrawerMenu(props) {
         <View style={styles.container}>
             <DrawerContentScrollView contentContainerStyle={styles.content} scrollEnabled={false} {...props}>
                 <View>
+                    <TouchableOpacity style={styles.buttonContainer} onPress={() => navigation.navigate('Ride History')}>
+                        <Text style={styles.buttonText}>Ride History</Text>
+                    </TouchableOpacity>
                     <TouchableOpacity style={styles.buttonContainer} onPress={logout}>
                         <Text style={styles.buttonText}>Log Out</Text>
                     </TouchableOpacity>
@@ -39,7 +42,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         alignSelf: 'stretch',
-        paddingHorizontal: 25
+        paddingHorizontal: 25,
+        paddingVertical: 5,
+        marginVertical: 5
     },
     buttonText: {
         fontSize: 16,

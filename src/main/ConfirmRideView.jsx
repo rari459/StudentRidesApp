@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React from 'react'
 import { View, StyleSheet, Text, TouchableOpacity, Alert, ActivityIndicator } from 'react-native'
 import NumericInput from 'react-native-numeric-input'
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'

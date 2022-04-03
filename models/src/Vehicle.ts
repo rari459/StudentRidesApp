@@ -76,9 +76,13 @@ export class Vehicle {
     }
 
     async getETA(location: Location): Promise<number> {
-        const center = [this.lastLocation.latitude, this.lastLocation.longitude]
-        const distanceInKm = distanceBetween([location.coordinates.latitude, location.coordinates.longitude], center)
-        const distanceInMi = distanceInKm / 1.609
-        return Promise.resolve(Math.round(distanceInMi * 15))
+        try {
+            const center = [this.lastLocation.latitude, this.lastLocation.longitude]
+            const distanceInKm = distanceBetween([location.coordinates.latitude, location.coordinates.longitude], center)
+            const distanceInMi = distanceInKm / 1.609
+            return Promise.resolve(Math.round(distanceInMi * 15))
+        } catch (err) {
+            return Promise.resolve(null)
+        }
     }
 }

@@ -53,7 +53,7 @@ export default function HomeView({ navigation }) {
                 flexGrow: 0
             },
             headerRightContainerStyle: {
-                flexGrow: 0,
+                flexGrow: 0
             }
         })
     }, [currentRide])
