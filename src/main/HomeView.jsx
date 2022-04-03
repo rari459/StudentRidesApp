@@ -149,6 +149,10 @@ export default function HomeView({ navigation }) {
                     latitudeDelta: 0.01,
                     longitudeDelta: 0.01,
                 }}
+                showsCompass={true}
+                compassOffset={{x: 20, y: -100}}
+                showsUserLocation={true}
+                followsUserLocation={currentRide && !currentRide.isPending}
             >
                 {renderVehicleMarkers()}
             </MapView>

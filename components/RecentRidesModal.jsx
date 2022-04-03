@@ -31,6 +31,7 @@ export default function RecentRidesModal() {
             const locations = await currentUser.getPreviousDestinations()
             setPreviousDestinations(locations)
         } catch (err) {
+            console.log(err)
             Alert.alert("Error", err.message)
         }
     }

@@ -65,7 +65,7 @@ export class User {
     }
 
     async getPreviousDestinations(): Promise<any[]> {
-        const result = await firestore().collection('users').doc(this.uid).collection('rides').orderBy('dateCreated', 'desc').limit(6).get()
+        const result = await firestore().collection('users').doc(this.uid).collection('rides').where('isCompleted', '==', true).orderBy('dateCreated', 'desc').limit(6).get()
         const rideDocs = result.docs
         if (!rideDocs || result.empty) {
             return Promise.resolve([])
