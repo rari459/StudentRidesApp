@@ -41,16 +41,19 @@ export default function HomeView({ navigation }) {
             headerTransparent: true,
             headerLeft: DrawerButton,
             headerTitle: HeaderBar,
+            headerTitleAlign: 'right',
             headerTitleContainerStyle: {
-                flexGrow: 1
+                flexGrow: 1,
+                marginHorizontal: 10,
+                marginRight: 15
             },
             headerLeftContainerStyle: {
                 padding: 15,
-                marginRight: 20,
+                marginRight: -10,
                 flexGrow: 0
             },
             headerRightContainerStyle: {
-                flexGrow: 0
+                flexGrow: 0,
             }
         })
     }, [currentRide])
@@ -151,7 +154,8 @@ export default function HomeView({ navigation }) {
                 }}
                 showsCompass={true}
                 compassOffset={{x: 20, y: -100}}
-                showsUserLocation={true}
+                showsUserLocation={false}
+                toolbarEnabled={false}
                 followsUserLocation={currentRide && !currentRide.isPending}
             >
                 {renderVehicleMarkers()}
@@ -184,8 +188,7 @@ const styles = StyleSheet.create({
     },
     headerBar: {
         backgroundColor: '#fff',
-        height: 40,
-        flexGrow: 1,
+        height: 42.5,
         flexDirection: 'row',
         alignSelf: 'stretch',
         alignItems: 'center',
@@ -213,7 +216,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20
     },
     markerImage: {
-        height: 30,
+        maxHeight: 60,
+        maxWidth: 60,
         aspectRatio: 2
     }
 });
