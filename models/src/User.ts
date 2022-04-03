@@ -90,7 +90,7 @@ export class User {
         return Promise.resolve(response)
     }
 
-    async getRidesHistory(): Promise<any[]> {
+    async getPastRides(): Promise<any[]> {
         const result = await firestore().collection('users').doc(this.uid).collection('rides').orderBy('dateCreated', 'desc').get()
         const rideDocs = result.docs
         if (!rideDocs || result.empty) {

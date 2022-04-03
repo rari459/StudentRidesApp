@@ -16,7 +16,7 @@ export default function RideHistoryView({ route, navigation }) {
     async function refresh() {
         try {
             setLoading(true)
-            const rides = await currentUser.getRidesHistory()
+            const rides = await currentUser.getPastRides()
 
             const data = []
             const yesterday = moment().subtract(1, 'day').endOf('day')
