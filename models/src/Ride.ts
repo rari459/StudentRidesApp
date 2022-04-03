@@ -92,7 +92,7 @@ export class Ride {
     async cancel(): Promise<void> {
         this.isCancelled = true
         this.isPending = false
-        await this.save()
+        return this.save()
     }
 
     async save(): Promise<void> {

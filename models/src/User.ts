@@ -51,12 +51,12 @@ export class User {
     }
 
     async getCurrentRide(): Promise<Ride> {
-        const result = await firestore().collection('users').doc(this.uid).collection('rides').orderBy('dateCreated', 'desc').limit(1).get()
+        const result = await firestore().collection('users').doc(this.uid).collection('rides').where('isPending', '==', true).orderBy('dateCreated', 'desc').limit(1).get()
         const rideDocs = result.docs
         if (!rideDocs || result.empty) {
             return Promise.resolve(null)
         }
-        const rides = rideDocs.map((doc) => doc.data()).filter(el => el.isPending || (!el.isCompleted && !el.isCancelled))
+        const rides = rideDocs.map((doc) => doc.data())
         if (rides.length === 0) {
             return Promise.resolve(null)
         }
