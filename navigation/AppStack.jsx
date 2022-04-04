@@ -1,6 +1,7 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import HomeView from '../src/main/HomeView.jsx';
+import RideHistory from '../src/main/RideHistory.jsx';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import DrawerMenu from './DrawerMenu';
 import RequestRideView from '../src/main/RequestRideView.jsx';
@@ -37,6 +38,7 @@ export default function AppStack() {
         <Stack.Screen name="Home" component={HomeView}/>
         <Stack.Screen name="Request Ride" component={RequestRideStack} options={{presentation: 'modal', headerShown: false}}/>
         <Stack.Screen name="Rate Ride" component={RatingView} options={{presentation: 'modal', headerBackImage: () => <Feather name={'x'} size={28} color={'#000'} style={{padding: 5}}/>}}/>
+        <Stack.Screen name="RideHistory" component={RideHistory}/>
       </Stack.Navigator>
     )
   }

@@ -3,11 +3,16 @@ import { Text, TouchableOpacity, StyleSheet, View, Alert } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { DrawerContentScrollView } from '@react-navigation/drawer'
 import AuthContext from './AuthContext'
+import RideHistory from '../src/main/RideHistory.jsx'
+ 
 
 export default function DrawerMenu(props) {
 
     const navigation = useNavigation()
     const { currentUser, logout } = React.useContext(AuthContext)
+    const RideHistoryView = () => {
+        navigation.navigate("RideHistory");
+      };
 
     return (
         <View style={styles.container}>
@@ -15,6 +20,9 @@ export default function DrawerMenu(props) {
                 <View>
                     <TouchableOpacity style={styles.buttonContainer} onPress={logout}>
                         <Text style={styles.buttonText}>Log Out</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.buttonContainer} onPress={RideHistoryView}>
+                        <Text style={styles.buttonText}>Ride History</Text>
                     </TouchableOpacity>
                 </View>
             </DrawerContentScrollView>
