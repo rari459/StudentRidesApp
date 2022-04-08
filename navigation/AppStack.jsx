@@ -38,7 +38,13 @@ export default function AppStack() {
         <Stack.Screen name="Home" component={HomeView}/>
         <Stack.Screen name="Request Ride" component={RequestRideStack} options={{presentation: 'modal', headerShown: false}}/>
         <Stack.Screen name="Rate Ride" component={RatingView} options={{presentation: 'modal', headerBackImage: () => <Feather name={'x'} size={28} color={'#000'} style={{padding: 5}}/>}}/>
-        <Stack.Screen name="RideHistory" component={RideHistory}/>
+        <Stack.Screen name="RideHistory" component={RideHistory}
+        options = {{
+          title : "Ride History",
+          headerTitleAlign: 'center'
+        }}
+
+        />
       </Stack.Navigator>
     )
   }

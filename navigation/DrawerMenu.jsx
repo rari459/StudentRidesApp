@@ -47,10 +47,12 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         alignSelf: 'stretch',
-        paddingHorizontal: 25
+        paddingHorizontal: 25,
+        paddingBottom: 12,
+        paddingTop : 5
     },
     buttonText: {
-        fontSize: 16,
+        fontSize: 20,
         fontWeight: '500'
     }
 })
